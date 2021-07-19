@@ -35,6 +35,15 @@ internal class BluetoothSerialDeviceImpl constructor(
         }
     }
 
+    override fun sendRaw(bytes: ByteArray): Completable {
+        checkNotClosed()
+        return Completable.fromAction {
+            synchronized(outputStream) {
+                if (!closed.get()) outputStream.write(bytes)
+            }
+        }
+    }
+
     override fun openMessageStream(): Flowable<String> {
         checkNotClosed()
         return Flowable.create({ emitter ->
@@ -45,6 +54,28 @@ internal class BluetoothSerialDeviceImpl constructor(
                         val receivedString = reader.readLine()
                         if (!TextUtils.isEmpty(receivedString)) {
                             emitter.onNext(receivedString)
+                        }
+                    } catch (e: Exception) {
+                        if (!emitter.isCancelled && !closed.get()) {
+                            emitter.onError(e)
+                        }
+                    }
+                }
+            }
+            emitter.onComplete()
+        }, BackpressureStrategy.BUFFER)
+    }
+
+    override fun openRawMessageStream(): Flowable<ByteArray> {
+        checkNotClosed()
+        return Flowable.create({ emitter ->
+            while (!emitter.isCancelled && !closed.get()) {
+                synchronized(inputStream) {
+                    try {
+                        val avail = inputStream.available()
+                        if (avail > 0) {
+                            val raw = inputStream.readBytes()
+                            emitter.onNext(raw)
                         }
                     } catch (e: Exception) {
                         if (!emitter.isCancelled && !closed.get()) {

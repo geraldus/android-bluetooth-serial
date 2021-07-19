@@ -36,6 +36,13 @@ interface BluetoothSerialDevice {
     fun send(message: String): Completable
 
     /**
+     * @param bytes The raw message to send to the device
+     * @return An RxJava Completable to asynchronously
+     * send the message.
+     */
+    fun sendRaw(bytes: ByteArray): Completable
+
+    /**
      * @return An RxJava Flowable that, when observed,
      * will provide a stream of messages from the device.
      * A message is considered to be terminated by a
@@ -45,6 +52,12 @@ interface BluetoothSerialDevice {
      * please manage the input yourself via [inputStream]
      */
     fun openMessageStream(): Flowable<String>
+
+    /**
+     * @return An RxJava Flowable that, when observed,
+     * will provide a stream of raw messages from the device.
+     */
+    fun openRawMessageStream(): Flowable<ByteArray>
 
     /**
      * Wrap using a SimpleBluetoothDeviceInterface.
