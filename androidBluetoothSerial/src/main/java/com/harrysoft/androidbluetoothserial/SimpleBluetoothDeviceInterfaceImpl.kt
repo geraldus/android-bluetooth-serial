@@ -51,6 +51,14 @@ internal class SimpleBluetoothDeviceInterfaceImpl(override val device: Bluetooth
         this.errorListener = errorListener
     }
 
+    override fun setRawListeners(rawMessageReceivedListener: SimpleBluetoothDeviceInterface.OnRawMessageReceivedListener?,
+                                 rawMessageSentListener: SimpleBluetoothDeviceInterface.OnRawMessageSentListener?,
+                                 errorListener: SimpleBluetoothDeviceInterface.OnErrorListener?) {
+        this.rawMessageReceivedListener = rawMessageReceivedListener
+        this.rawMessageSentListener = rawMessageSentListener
+        this.errorListener = errorListener
+    }
+
     override fun setMessageReceivedListener(listener: SimpleBluetoothDeviceInterface.OnMessageReceivedListener?) {
         messageReceivedListener = listener
     }

@@ -11,7 +11,7 @@ interface SimpleBluetoothDeviceInterface {
     fun sendRawMessage(bytes: ByteArray)
 
     /**
-     * Set all of the listeners for the interfact
+     * Set all of the listeners for the interface
      *
      * @param messageReceivedListener Receive message callback
      * @param messageSentListener Send message callback (indicates that a message was successfully sent)
@@ -20,6 +20,17 @@ interface SimpleBluetoothDeviceInterface {
     fun setListeners(messageReceivedListener: OnMessageReceivedListener?,
                      messageSentListener: OnMessageSentListener?,
                      errorListener: OnErrorListener?)
+
+    /**
+     * Set all of the raw listeners for the interface
+     *
+     * @param messageReceivedListener Receive message callback
+     * @param messageSentListener Send message callback (indicates that a message was successfully sent)
+     * @param errorListener Error callback
+     */
+    fun setRawListeners(rawMessageReceivedListener: OnRawMessageReceivedListener?,
+                        rawMessageSentListener: OnRawMessageSentListener?,
+                        errorListener: OnErrorListener?)
 
     /**
      * Set the message received listener
