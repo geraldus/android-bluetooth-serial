@@ -72,10 +72,15 @@ internal class BluetoothSerialDeviceImpl constructor(
             while (!emitter.isCancelled && !closed.get()) {
                 synchronized(inputStream) {
                     try {
-                        val avail = inputStream.available()
-                        if (avail > 0) {
-                            val raw = inputStream.readBytes()
-                            emitter.onNext(raw)
+                        var avail = 0
+                        while (avail <= 0) {
+                            avail = inputStream.available()
+                            if (avail > 0) {
+                                var raw = byteArrayOf()
+                                for (i in 1 .. avail)
+                                    raw[raw.lastIndex] = inputStream.read().toByte()
+                                emitter.onNext(raw)
+                            }
                         }
                     } catch (e: Exception) {
                         if (!emitter.isCancelled && !closed.get()) {
